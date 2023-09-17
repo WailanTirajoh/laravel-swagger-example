@@ -11,6 +11,12 @@ use App\Http\Resources\PostResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+/**
+ * @OA\Tag(
+ *     name="Post",
+ *     description="Post endpoints"
+ * )
+ */
 class PostController extends Controller
 {
     /**

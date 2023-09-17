@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\ApiResponse;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Response;
@@ -31,16 +32,36 @@ class RegisterController extends Controller
      *         response=201,
      *         description="User registered successfully",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="User created successfully"),
-     *             @OA\Property(property="access_token", type="string", example="your-access-token")
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="User created successfully"
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="access_token",
+     *                     type="string",
+     *                     example="your-access-token"
+     *                 )
+     *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=422,
-     *         description="Validation error",
+     *         description="Unprocessable Entity",
      *         @OA\JsonContent(
-     *             @OA\Property(property="errors", type="object", example={"name": {"The name field is required."}}),
-     *             @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 example={"email": {"Invalid credentials"}}
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Unprocessable Entity"
+     *             )
      *         )
      *     )
      * )
@@ -54,9 +75,10 @@ class RegisterController extends Controller
 
         $accessToken = $user->createToken('access_token')->plainTextToken;
 
-        return response()->json([
-            'user' => $user,
-            'access_token' => $accessToken,
-        ], Response::HTTP_CREATED);
+        return ApiResponse::success(
+            message: 'User created successfully',
+            data: ['access_token' => $accessToken],
+            statusCode: Response::HTTP_CREATED
+        );
     }
 }

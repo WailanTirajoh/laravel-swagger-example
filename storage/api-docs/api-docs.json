@@ -34,9 +34,14 @@
                                             "type": "string",
                                             "example": "Success login"
                                         },
-                                        "access_token": {
-                                            "type": "string",
-                                            "example": "your-access-token"
+                                        "data": {
+                                            "properties": {
+                                                "access_token": {
+                                                    "type": "string",
+                                                    "example": "your-access-token"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -50,17 +55,22 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "errors": {
-                                            "type": "object",
-                                            "example": {
-                                                "email": [
-                                                    "Invalid credentials"
-                                                ]
-                                            }
-                                        },
-                                        "message": {
+                                        "error": {
                                             "type": "string",
                                             "example": "Invalid credentials"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "errors": {
+                                                    "type": "object",
+                                                    "example": {
+                                                        "email": [
+                                                            "Invalid credentials"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -100,9 +110,14 @@
                                             "type": "string",
                                             "example": "User created successfully"
                                         },
-                                        "access_token": {
-                                            "type": "string",
-                                            "example": "your-access-token"
+                                        "data": {
+                                            "properties": {
+                                                "access_token": {
+                                                    "type": "string",
+                                                    "example": "your-access-token"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -111,7 +126,7 @@
                         }
                     },
                     "422": {
-                        "description": "Validation error",
+                        "description": "Unprocessable Entity",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -119,14 +134,14 @@
                                         "errors": {
                                             "type": "object",
                                             "example": {
-                                                "name": [
-                                                    "The name field is required."
+                                                "email": [
+                                                    "Invalid credentials"
                                                 ]
                                             }
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "The given data was invalid."
+                                            "example": "Unprocessable Entity"
                                         }
                                     },
                                     "type": "object"
