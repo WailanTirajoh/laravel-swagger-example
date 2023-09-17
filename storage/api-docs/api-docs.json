@@ -174,11 +174,16 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "posts": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/PostResource"
-                                            }
+                                        "data": {
+                                            "properties": {
+                                                "posts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/PostResource"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -269,8 +274,13 @@
                                             "type": "string",
                                             "example": "Post created successfully"
                                         },
-                                        "post": {
-                                            "$ref": "#/components/schemas/PostResource"
+                                        "data": {
+                                            "properties": {
+                                                "post": {
+                                                    "$ref": "#/components/schemas/PostResource"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -379,8 +389,13 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "post": {
-                                            "$ref": "#/components/schemas/PostResource"
+                                        "data": {
+                                            "properties": {
+                                                "post": {
+                                                    "$ref": "#/components/schemas/PostResource"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -482,8 +497,13 @@
                                             "type": "string",
                                             "example": "Post updated successfully"
                                         },
-                                        "post": {
-                                            "$ref": "#/components/schemas/PostResource"
+                                        "data": {
+                                            "properties": {
+                                                "post": {
+                                                    "$ref": "#/components/schemas/PostResource"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"

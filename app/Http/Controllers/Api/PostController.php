@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\ApiResponse;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
@@ -41,9 +42,10 @@ class PostController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Successful response: List of posts",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
      *                 type="object",
      *                 @OA\Property(
      *                     property="posts",
@@ -56,45 +58,36 @@ class PostController extends Controller
      *     @OA\Response(
      *         response=401,
      *         description="Unauthorized: Invalid credentials",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Unauthorized"
-     *                 )
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Unauthorized"
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=403,
      *         description="Forbidden: Insufficient permissions",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Forbidden"
-     *                 )
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Forbidden"
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=404,
      *         description="Not Found: Posts not found",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Not Found"
-     *                 )
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Not Found"
      *             )
      *         )
      *     ),
@@ -108,9 +101,11 @@ class PostController extends Controller
         $limit = $request->query('limit', 5);
         $posts = Post::with("author")->paginate($limit);
 
-        return response()->json([
-            'posts' => PostResource::collection($posts)
-        ]);
+        return ApiResponse::success(
+            data: [
+                'posts' => PostResource::collection($posts)
+            ]
+        );
     }
 
     /**
@@ -129,15 +124,16 @@ class PostController extends Controller
      *     @OA\Response(
      *         response=201,
      *         description="Post created successfully",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Post created successfully"
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
      *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Post created successfully"
-     *                 ),
      *                 @OA\Property(
      *                     property="post",
      *                     ref="#/components/schemas/PostResource"
@@ -148,65 +144,56 @@ class PostController extends Controller
      *     @OA\Response(
      *         response=401,
      *         description="Unauthorized",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Unauthorized"
-     *                 )
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Unauthorized"
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=403,
      *         description="Forbidden",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Forbidden"
-     *                 )
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Forbidden"
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=422,
      *         description="Validation error",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Validation error"
+     *             ),
+     *             @OA\Property(
+     *                 property="errors",
      *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Validation error"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="errors",
-     *                     type="object",
-     *                     description="Validation error details",
-     *                     example={
-     *                         "title": {
-     *                             "The title field is required."
-     *                         },
-     *                         "slug": {
-     *                             "The slug field is required.",
-     *                             "The slug has already been taken."
-     *                         },
-     *                         "body": {
-     *                             "The body field is required."
-     *                         },
-     *                         "author_id": {
-     *                             "The user id field is required."
-     *                         }
+     *                 description="Validation error details",
+     *                 example={
+     *                     "title": {
+     *                         "The title field is required."
+     *                     },
+     *                     "slug": {
+     *                         "The slug field is required.",
+     *                         "The slug has already been taken."
+     *                     },
+     *                     "body": {
+     *                         "The body field is required."
+     *                     },
+     *                     "author_id": {
+     *                         "The user id field is required."
      *                     }
-     *                 )
+     *                 }
      *             )
      *         )
      *     ),
@@ -217,13 +204,23 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        $validatedData = $request->validated();
-        $post = Post::create($validatedData);
+        try {
+            $validatedData = $request->validated();
+            $post = Post::create($validatedData);
 
-        return response()->json([
-            'message' => 'Post created successfully',
-            'post' => PostResource::make($post->load("author"))
-        ], Response::HTTP_CREATED);
+            return ApiResponse::success(
+                message: 'Post created successfully',
+                data: [
+                    "post" => PostResource::make($post->load('author'))
+                ],
+                statusCode: Response::HTTP_CREATED
+            );
+        } catch (\Exception $e) {
+            return ApiResponse::error(
+                message: "Failed to create post: {$e->getMessage()}",
+                statusCode: Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     /**
@@ -244,9 +241,10 @@ class PostController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Post retrieved successfully",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
      *                 type="object",
      *                 @OA\Property(
      *                     property="post",
@@ -258,45 +256,36 @@ class PostController extends Controller
      *     @OA\Response(
      *         response=401,
      *         description="Unauthorized",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Unauthorized"
-     *                 )
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Unauthorized"
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=403,
      *         description="Forbidden",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Forbidden"
-     *                 )
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Forbidden"
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=404,
      *         description="Post not found",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Not Found"
-     *                 )
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Not Found"
      *             )
      *         )
      *     ),
@@ -307,9 +296,11 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return response()->json([
-            'post' => PostResource::make($post->load("author"))
-        ]);
+        return ApiResponse::success(
+            data: [
+                'post' => PostResource::make($post->load("author"))
+            ]
+        );
     }
 
     /**
@@ -337,15 +328,16 @@ class PostController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Post updated successfully",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Post updated successfully"
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
      *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Post updated successfully"
-     *                 ),
      *                 @OA\Property(
      *                     property="post",
      *                     ref="#/components/schemas/PostResource"
@@ -356,65 +348,56 @@ class PostController extends Controller
      *     @OA\Response(
      *         response=401,
      *         description="Unauthorized",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Unauthorized"
-     *                 )
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Unauthorized"
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=403,
      *         description="Forbidden",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Forbidden"
-     *                 )
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Forbidden"
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=422,
      *         description="Validation error",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Validation error"
+     *             ),
+     *             @OA\Property(
+     *                 property="errors",
      *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Validation error"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="errors",
-     *                     type="object",
-     *                     description="Validation error details",
-     *                     example={
-     *                         "title": {
-     *                             "The title field is required."
-     *                         },
-     *                         "slug": {
-     *                             "The slug field is required.",
-     *                             "The slug has already been taken."
-     *                         },
-     *                         "body": {
-     *                             "The body field is required."
-     *                         },
-     *                         "author_id": {
-     *                             "The user id field is required."
-     *                         }
+     *                 description="Validation error details",
+     *                 example={
+     *                     "title": {
+     *                         "The title field is required."
+     *                     },
+     *                     "slug": {
+     *                         "The slug field is required.",
+     *                         "The slug has already been taken."
+     *                     },
+     *                     "body": {
+     *                         "The body field is required."
+     *                     },
+     *                     "author_id": {
+     *                         "The user id field is required."
      *                     }
-     *                 )
+     *                 }
      *             )
      *         )
      *     ),
@@ -425,12 +408,23 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        $post->update($request->validated());
+        try {
+            $validatedData = $request->validated();
+            $post->update($validatedData);
 
-        return response()->json([
-            'message' => 'Post updated successfully',
-            'post' => PostResource::make($post->load("author"))
-        ]);
+            return ApiResponse::success(
+                message: 'Post updated successfully',
+                data: [
+                    "post" => PostResource::make($post->load('author'))
+                ],
+                statusCode: Response::HTTP_OK
+            );
+        } catch (\Exception $e) {
+            return ApiResponse::error(
+                message: "Failed to update post: {$e->getMessage()}",
+                statusCode: Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     /**
@@ -451,60 +445,48 @@ class PostController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Post deleted successfully",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Post deleted successfully"
-     *                 )
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Post deleted successfully"
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=401,
      *         description="Unauthorized",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Unauthorized"
-     *                 )
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Unauthorized"
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=403,
      *         description="Forbidden",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Forbidden"
-     *                 )
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Forbidden"
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=404,
      *         description="Post not found",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Not Found"
-     *                 )
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Not Found"
      *             )
      *         )
      *     ),
@@ -515,10 +497,15 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        $post->delete();
+        try {
+            $post->delete();
 
-        return response()->json([
-            'message' => 'Post deleted successfully',
-        ]);
+            return ApiResponse::success(message: 'Post deleted successfully');
+        } catch (\Exception $e) {
+            return ApiResponse::error(
+                message: "Failed to update post: {$e->getMessage()}",
+                statusCode: Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }
