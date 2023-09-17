@@ -506,7 +506,7 @@ class PostController extends Controller
         try {
             $post->delete();
 
-            return ApiResponse::success(message: 'Post deleted successfully');
+            return ApiResponse::success(message: 'Post deleted successfully', statusCode: Response::HTTP_NO_CONTENT);
         } catch (\Exception $e) {
             return ApiResponse::error(
                 message: "Failed to update post: {$e->getMessage()}",
