@@ -8,7 +8,7 @@ use Illuminate\Routing\Controller as BaseController;
 
 /**
  * @OA\Info(
- *    title="Lara Movies API Documentation",
+ *    title="Laravel Swagger API Documentation",
  *    version="1.0.0",
  * ),
  *   @OA\SecurityScheme(

@@ -13,7 +13,7 @@ use Illuminate\Http\Response;
 
 /**
  * @OA\Tag(
- *     name="Post",
+ *     name="Posts",
  *     description="Post endpoints"
  * )
  */
