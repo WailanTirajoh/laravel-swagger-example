@@ -27,6 +27,6 @@ Route::group(["as" => "api."], function () {
             'auth:sanctum'
         ],
     ], function () {
-        Route::resource("posts", PostController::class);
+        Route::apiResource("posts", PostController::class);
     });
 });
