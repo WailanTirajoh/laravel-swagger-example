@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegisterController;
-use App\Http\Controllers\Api\MovieController;
+use App\Http\Controllers\Api\PostController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +27,6 @@ Route::group(["as" => "api."], function () {
             'auth:sanctum'
         ],
     ], function () {
-        Route::resource("movies", MovieController::class);
+        Route::resource("posts", PostController::class);
     });
 });

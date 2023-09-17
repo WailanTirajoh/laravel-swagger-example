@@ -137,19 +137,19 @@
                 }
             }
         },
-        "/api/movies": {
+        "/api/posts": {
             "get": {
                 "tags": [
-                    "Movies"
+                    "Posts"
                 ],
-                "summary": "Get a list of movies",
-                "description": "Returns a list of movies",
-                "operationId": "f1b3cb64ae74885cdcf404eebe09485f",
+                "summary": "Get a list of posts",
+                "description": "Returns a list of posts",
+                "operationId": "3fda362e2e082b5357ac416e7767e435",
                 "parameters": [
                     {
                         "name": "limit",
                         "in": "query",
-                        "description": "Number of movies per page (default is 5)",
+                        "description": "Number of posts per page (default is 5)",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -169,27 +169,69 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful response: List of movies",
+                        "description": "Successful response: List of posts",
                         "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "posts": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PostResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     },
                     "401": {
                         "description": "Unauthorized: Invalid credentials",
                         "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     },
                     "403": {
                         "description": "Forbidden: Insufficient permissions",
                         "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Forbidden"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     },
                     "404": {
-                        "description": "Not Found: Movies not found",
+                        "description": "Not Found: Posts not found",
                         "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not Found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     }
                 },
@@ -201,34 +243,34 @@
             },
             "post": {
                 "tags": [
-                    "Movies"
+                    "Posts"
                 ],
-                "summary": "Store a new movie",
-                "description": "Stores a new movie in the database",
-                "operationId": "99aa988b99ecf68d2dced90d100bff63",
+                "summary": "Store a new post",
+                "description": "Stores a new post in the database",
+                "operationId": "dcb66200c3132996151884ac232cf439",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/StoreMovieRequest"
+                                "$ref": "#/components/schemas/StorePostRequest"
                             }
                         }
                     }
                 },
                 "responses": {
                     "201": {
-                        "description": "Movie created successfully",
+                        "description": "Post created successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Movie created successfully"
+                                            "example": "Post created successfully"
                                         },
-                                        "movie": {
-                                            "$ref": "#/components/schemas/MovieResource"
+                                        "post": {
+                                            "$ref": "#/components/schemas/PostResource"
                                         }
                                     },
                                     "type": "object"
@@ -239,19 +281,68 @@
                     "401": {
                         "description": "Unauthorized",
                         "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Forbidden"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     },
                     "422": {
                         "description": "Validation error",
                         "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        },
+                                        "errors": {
+                                            "description": "Validation error details",
+                                            "type": "object",
+                                            "example": {
+                                                "title": [
+                                                    "The title field is required."
+                                                ],
+                                                "slug": [
+                                                    "The slug field is required.",
+                                                    "The slug has already been taken."
+                                                ],
+                                                "body": [
+                                                    "The body field is required."
+                                                ],
+                                                "author_id": [
+                                                    "The user id field is required."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     }
                 },
@@ -262,19 +353,19 @@
                 ]
             }
         },
-        "/api/movies/{movie}": {
+        "/api/posts/{post}": {
             "get": {
                 "tags": [
-                    "Movies"
+                    "Posts"
                 ],
-                "summary": "Get a single movie by ID",
-                "description": "Retrieves a single movie by its ID",
-                "operationId": "af114386bfd942e4a5971042e6ba1996",
+                "summary": "Get a single post by ID",
+                "description": "Retrieves a single post by its ID",
+                "operationId": "5042caf9a6c47bde39921c8f400e28b5",
                 "parameters": [
                     {
-                        "name": "movie",
+                        "name": "post",
                         "in": "path",
-                        "description": "ID of the movie to retrieve",
+                        "description": "ID of the post to retrieve",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -283,13 +374,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Movie retrieved successfully",
+                        "description": "Post retrieved successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "movie": {
-                                            "$ref": "#/components/schemas/MovieResource"
+                                        "post": {
+                                            "$ref": "#/components/schemas/PostResource"
                                         }
                                     },
                                     "type": "object"
@@ -300,19 +391,49 @@
                     "401": {
                         "description": "Unauthorized",
                         "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Forbidden"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     },
                     "404": {
-                        "description": "Movie not found",
+                        "description": "Post not found",
                         "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not Found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     }
                 },
@@ -324,16 +445,16 @@
             },
             "put": {
                 "tags": [
-                    "Movies"
+                    "Posts"
                 ],
-                "summary": "Update a movie by ID",
-                "description": "Updates a movie by its ID",
-                "operationId": "905ee2eb024274852d779a61b7773db0",
+                "summary": "Update a post by ID",
+                "description": "Updates a post by its ID",
+                "operationId": "fc17b67462ad71a7f4b287520462fd02",
                 "parameters": [
                     {
-                        "name": "movie",
+                        "name": "post",
                         "in": "path",
-                        "description": "ID of the movie to update",
+                        "description": "ID of the post to update",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -345,24 +466,24 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/UpdateMovieRequest"
+                                "$ref": "#/components/schemas/UpdatePostRequest"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Movie updated successfully",
+                        "description": "Post updated successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Movie updated successfully"
+                                            "example": "Post updated successfully"
                                         },
-                                        "movie": {
-                                            "$ref": "#/components/schemas/MovieResource"
+                                        "post": {
+                                            "$ref": "#/components/schemas/PostResource"
                                         }
                                     },
                                     "type": "object"
@@ -373,25 +494,68 @@
                     "401": {
                         "description": "Unauthorized",
                         "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Forbidden"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     },
                     "422": {
                         "description": "Validation error",
                         "content": {
-                            "application/json": {}
-                        }
-                    },
-                    "404": {
-                        "description": "Movie not found",
-                        "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        },
+                                        "errors": {
+                                            "description": "Validation error details",
+                                            "type": "object",
+                                            "example": {
+                                                "title": [
+                                                    "The title field is required."
+                                                ],
+                                                "slug": [
+                                                    "The slug field is required.",
+                                                    "The slug has already been taken."
+                                                ],
+                                                "body": [
+                                                    "The body field is required."
+                                                ],
+                                                "author_id": [
+                                                    "The user id field is required."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     }
                 },
@@ -403,16 +567,16 @@
             },
             "delete": {
                 "tags": [
-                    "Movies"
+                    "Posts"
                 ],
-                "summary": "Delete a movie by ID",
-                "description": "Deletes a movie by its ID",
-                "operationId": "9152b84c359a7ea20dd945014c623fd1",
+                "summary": "Delete a post by ID",
+                "description": "Deletes a post by its ID",
+                "operationId": "f0dcb391948b9589ee732a26a68e17c7",
                 "parameters": [
                     {
-                        "name": "movie",
+                        "name": "post",
                         "in": "path",
-                        "description": "ID of the movie to delete",
+                        "description": "ID of the post to delete",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -421,14 +585,14 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Movie deleted successfully",
+                        "description": "Post deleted successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Movie deleted successfully"
+                                            "example": "Post deleted successfully"
                                         }
                                     },
                                     "type": "object"
@@ -439,19 +603,49 @@
                     "401": {
                         "description": "Unauthorized",
                         "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Forbidden"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     },
                     "404": {
-                        "description": "Movie not found",
+                        "description": "Post not found",
                         "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not Found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
                         }
                     }
                 },
@@ -511,73 +705,111 @@
                 },
                 "type": "object"
             },
-            "StoreMovieRequest": {
-                "title": "Store Movie Request",
-                "description": "Request structure for storing a new movie",
+            "StorePostRequest": {
+                "title": "Store Post Request",
+                "description": "Request structure for storing a new post",
                 "required": [
-                    "name",
                     "title",
-                    "author"
+                    "slug",
+                    "body",
+                    "author_id"
                 ],
                 "properties": {
-                    "name": {
-                        "description": "The name of the movie",
-                        "type": "string"
-                    },
                     "title": {
-                        "description": "The title of the movie",
+                        "description": "The title of the post",
                         "type": "string"
                     },
-                    "author": {
-                        "description": "The author of the movie",
+                    "slug": {
+                        "description": "The slug of the post",
                         "type": "string"
+                    },
+                    "body": {
+                        "description": "The body of the post",
+                        "type": "string"
+                    },
+                    "author_id": {
+                        "description": "The updated user ID associated with the post",
+                        "type": "integer"
                     }
                 },
                 "type": "object"
             },
-            "UpdateMovieRequest": {
-                "title": "Update Movie Request",
-                "description": "Request structure for storing a new movie",
+            "UpdatePostRequest": {
+                "title": "Update Post Request",
+                "description": "Request structure for updating a post",
                 "required": [
-                    "name",
                     "title",
-                    "author"
+                    "slug",
+                    "body",
+                    "author_id"
                 ],
                 "properties": {
-                    "name": {
-                        "description": "The name of the movie",
-                        "type": "string"
-                    },
                     "title": {
-                        "description": "The title of the movie",
+                        "description": "The updated title of the post",
                         "type": "string"
                     },
-                    "author": {
-                        "description": "The author of the movie",
+                    "slug": {
+                        "description": "The updated slug of the post",
                         "type": "string"
+                    },
+                    "body": {
+                        "description": "The updated body of the post",
+                        "type": "string"
+                    },
+                    "author_id": {
+                        "description": "The updated user ID associated with the post",
+                        "type": "integer"
                     }
                 },
                 "type": "object"
             },
-            "MovieResource": {
-                "title": "Movie Resource",
-                "description": "Movie Resource",
+            "AuthorResource": {
+                "title": "Author Resource",
+                "description": "Author Resource",
                 "properties": {
                     "id": {
-                        "description": "The unique identifier of the movie",
+                        "description": "The unique identifier of the author",
                         "type": "integer"
                     },
                     "name": {
-                        "description": "The name of the movie",
+                        "description": "The name of the author",
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "PostResource": {
+                "title": "Post Resource",
+                "description": "Post Resource",
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier of the post",
+                        "type": "integer"
                     },
                     "title": {
-                        "description": "The title of the movie",
+                        "description": "The title of the post",
                         "type": "string"
                     },
-                    "author": {
-                        "description": "The author of the movie",
+                    "slug": {
+                        "description": "The slug of the post",
                         "type": "string"
+                    },
+                    "body": {
+                        "description": "The body of the post",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "The timestamp when the post was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "author": {
+                        "$ref": "#/components/schemas/AuthorResource"
+                    },
+                    "updated_at": {
+                        "description": "The timestamp when the post was last updated",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
@@ -601,10 +833,6 @@
         {
             "name": "Auth",
             "description": "Authentication endpoints"
-        },
-        {
-            "name": "Movies",
-            "description": "Movies endpoints"
         }
     ]
 }
